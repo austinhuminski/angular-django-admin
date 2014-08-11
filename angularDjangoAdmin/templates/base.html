@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Angular Django Admin</title>
+	<link href="{{ STATIC_URL }}css/custom_changelists.css" rel="stylesheet">
+</head>
+
+<body data-ng-app="app">
+    <div id="content" class="col-lg-10 col-sm-11 ng-cloak">
+        <div data-ui-view="">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+
+</div>
+
+    <script type="text/javascript">
+        STATIC_URL = "{{ STATIC_URL|escapejs  }}";
+    </script>
+
+    <!-- ANGULAR -->
+    <script src="{{ STATIC_URL }}js/app/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-cookies.js"></script>
+    <script src="{{ STATIC_URL }}js/angular-bootstrap/ui-bootstrap.js"></script>
+    <script src="{{ STATIC_URL }}js/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="{{ STATIC_URL }}js/angular-route.js"></script>
+    <script src="{{ STATIC_URL }}js/angular-ui-router.min.js"></script>
+    <script src="{{ STATIC_URL }}js/app/ngLoadScript.js"></script>
+	<script src="{{ STATIC_URL }}js/app/app.js"></script>
+	<script src="{{ STATIC_URL }}js/app/filters.js"></script>
+	<script src="{{ STATIC_URL }}js/app/factories/forms.js"></script>
+	<script src="{{ STATIC_URL }}js/app/factories/admin_factories.js"></script>
+	<script src="{{ STATIC_URL }}js/app/directives.js"></script>
+	<script src="{{ STATIC_URL }}js/app/controllers/admin.js"></script>
+
+</body>
+</html>

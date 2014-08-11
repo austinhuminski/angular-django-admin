@@ -1,0 +1,121 @@
+<h2> GET MORE MONEY !!! </h2>
+<p> {{ app }} </p>
+<p> {{ model }} </p>
+
+<div class="box">
+    <div class="box-header">
+        <h2>{{ model }}</h2>
+    </div>
+
+    <div class="box-content">
+        <div class="tableWrapper" >
+            <pagination ng-model="currentPage" total-items="object_count" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" items-per-page="numPerPage" num-pages="numPages"></pagination>
+
+            <div id="dateHierarchy" >
+                <ul class="toplinks nav nav-pills">
+                    <li ng-show="dateMode == 'year'" ng-repeat="(year, values) in admin_attrs.date_hierarchy.years">
+                        <a href="" ng-click="filterObjects(admin_attrs.date_hierarchy.field + '__year', year); showMonths(year)">{{ year }}</a>
+                    </li>
+
+
+                    <li ng-if="dateMode =='months'"><a href="" ng-click="filterObjects(admin_attrs.date_hierarchy.field + '__year', ''); updateDateMode('year')"> < All Dates</a></li>
+                    <li ng-show="dateMode == 'months'" ng-repeat="month in months">
+                        <a href="" ng-click="filterObjects(admin_attrs.date_hierarchy.field + '__month', month.number); showDays(month)">{{ month.display }}</a>
+                    </li>
+
+                    <li ng-if="dateMode =='days'"><a href="" ng-click="filterObjects(admin_attrs.date_hierarchy.field + '__month', ''); showMonths(year)"> < {{ year }}</a></li>
+                    <li ng-show="dateMode == 'days'" ng-repeat="day in days">
+                        <a href="" ng-click="showDay(day);filterObjects(admin_attrs.date_hierarchy.field + '__day', day.number);">{{ day.display }}</a>
+                    </li>
+
+                    <li ng-if="dateMode =='day'"><a href="" ng-click="filterObjects(admin_attrs.date_hierarchy.field + '__day', ''); showDays(month)"> < {{ month.display }}</a></li>
+                    <li ng-show="dateMode == 'day'">
+                        <a href="">{{ day.display }}</a>
+                    </li>
+
+                </ul>
+            </div>
+            <div> {{ object_count }} </div>
+            <div> {{ row }} - </div>
+
+
+
+            <!-- <div ng&#45;repeat="(key, object) in objects">{{ key }} &#45; {{ object }} </div> -->
+            <form name="adminObjectsForm" ng-submit="saveObjects()" class="col-sm-10">
+                <table class="table table-striped table-bordered bootstrap-datatable datatable dataTable">
+                    <thead>
+                        <tr role="row">
+                            <th role="columnheader" ng-repeat="header in headers track by $index">{{ header }} </th>
+                        </tr>
+                    </thead>
+                    <tbody ng-repeat="(key, object) in objects"
+                           ng-form="adminObjectsForm.{{ object.pk }}"
+                           name="adminObjectsForm.{{ object.pk }}"
+                           object-form
+                           pk="{{object.pk}}"
+                    >
+                        <tr>
+                                <td ng-repeat-start="(key,value) in object track by $index"
+                                    ng-if="$first">
+                                    <a href ui-sref="modelChangeForm({'app': app, 'model': model, 'pk': object.pk})"> {{ value }}</a>
+                                    <small class="error" ng-show="object_1.phone.$valid"> TESTING </small>
+                                </td>
+                                <td ng-if="!$first" ng-switch="indexes.indexOf(key.toString())" ng-repeat-end>
+                                   <span ng-switch-when="-1">{{ value }}</span>
+                                   <span ng-switch-default>
+                                   <span> {{ value }}</span>
+                                    <input editable="{{ key }}"
+                                         field="{{ list_editable_indexes[key] }}"
+                                         ng-model=value
+                                     />
+                                   </span>
+                                   <!-- <input ng&#45;switch&#45;default -->
+                                   <!--      editable="{{ key }}" -->
+                                   <!--      ng&#45;model="value" -->
+                                   <!--     field="{{list_editable_indexes[key]}}" /> -->
+                                </td
+                       </tr>
+                    </tbody>
+
+                </table>
+                <input type="submit" name="adminObjectsFormSave" value="Save">
+            </form>
+
+            <div id="changelist-filter" class="col-sm-2">
+                <div ng-repeat="(filter, options) in admin_attrs.list_filter">
+                    <li class="nav-header"> By {{ options.label }} </li>
+                    <ul ng-show="options.field_type == 'BooleanField'">
+                        <li><a href="" ng-click="filterObjects(filter, '')">All</a></li>
+                        <li><a href="" ng-click="filterObjects(filter, 'True')">Yes</a></li>
+                        <li><a href="" ng-click="filterObjects(filter, 'False')">No</a></li>
+                    </ul>
+                    <ul ng-show="options.field_type == 'CharField'">
+
+                        <select ng-show="options.values.length >= 10"
+                            ng-model="choice"
+                             ng-change="filterObjects(filter, choice)"
+                             ng-options="option for option in options.values">
+                            <option value="">All</option>
+                        </select>
+                        <div ng-if="options.values.length < 10">
+                            <li ng-repeat="option in options.values">{{ option }}</li>
+                        </div>
+                    </ul>
+                    <ul ng-show="options.field_type == 'DateField'">
+                       <li><a href="" ng-model="filter" ng-click="filterObjects(filter, '')">Any Date</a></li>
+                       <li><a href="" ng-model="filter" ng-click="filterObjects([filter + '__gte', filter + '__lt'], [options.date_range.today, options.date_range.tomorrow])">Today</a></li>
+                       <li><a href="" ng-model="filter" ng-click="filterObjects([filter + '__gte', filter + '__lt'], [options.date_range.past_seven, options.date_range.tomorrow])">Past 7 days</a></li>
+                       <li><a href="" ng-model="filter" ng-click="filterObjects([filter + '__gte', filter + '__lt'], [options.date_range.first_of_month, options.date_range.tomorrow])">This Month</a></li>
+                       <li><a href="" ng-model="filter" ng-click="filterObjects([filter + '__gte', filter + '__lt'], [options.date_range.first_of_year, options.date_range.tomorrow])">This Year</a></li>
+                    </ul>
+
+                </div>
+
+            </div>
+            <pagination ng-model="currentPage" total-items="object_count" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" items-per-page="numPerPage" num-pages="numPages"></pagination>
+
+        </div>
+
+    </div>
+
+</div>

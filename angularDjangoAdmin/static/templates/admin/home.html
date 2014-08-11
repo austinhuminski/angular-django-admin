@@ -1,0 +1,31 @@
+<h1> MESSAGE:  {{ model }}</h1>
+
+<div class="col-md-7">
+    <div class="row" ng-repeat="(app, models) in app_details">
+        <div class="box">
+            <div class="box-header">
+                <h2>{{ app }}</h2>
+            </div>
+            <div class="box-content">
+                <table class="table admin_table table-bordered table-striped">
+                    <tbody>
+                        <tr ng-repeat="model in models">
+                            <th><a href="/admin/{{ app | lowercase }}/{{ model.name| lowercase | strip }}/?p=1">{{ model.verbose }}</a></th>
+
+                            <td>
+                                <a href="" class="addlink">
+                                    <button class="btn btn-small btn-success">Add</button>
+                                </a>
+                            </td>
+                             <td>
+                                <a href="" class="changelink">
+                                    <button class="btn btn-small btn-warning">Add</button>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

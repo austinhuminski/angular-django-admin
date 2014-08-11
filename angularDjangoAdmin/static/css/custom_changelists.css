@@ -1,0 +1,46 @@
+#changelist-filter li, ul li
+{
+    list-style-type: none;
+}
+
+#changelist-filter ul
+{
+    padding-left: 0;
+}
+
+#changelist-filter li.nav-header
+{
+   background: #78cd51;
+    padding: 4px 10px;
+    margin: 5px 0;
+    color: white;
+    display: inline-block;
+    font-size: 12px;
+    width: 100%;
+}
+
+#changelist-search
+{
+    padding-left: 15px;
+}
+
+#changelist-filter div.select
+{
+    align: left;
+}
+
+ol.breadcrumb
+{
+    padding: 0 15px;
+    margin-bottom: 0px
+}
+
+div.row-fluid
+{
+    margin: 10px 0 0 14px;
+}
+
+#changelist-filter select
+{
+    width: 100%;
+}

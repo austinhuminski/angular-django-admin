@@ -1,0 +1,100 @@
+app.controller('adminHomeController', [
+    '$scope', '$http', 'appDetails',
+    function adminController($scope, $http, appDetails) {
+        $scope.model = 'GET MONEY';
+        appDetails.getDetails()
+            .success(function (data){
+                $scope.app_details = data;
+            });
+
+    }
+]);
+
+
+app.controller('adminModelController', [
+    '$scope', '$http', '$stateParams', 'modelDetails', '$q', '$location', '$rootScope',
+    function adminController($scope, $http, $stateParams, modelDetails, $q, $location, $rootScope) {
+
+        $scope.filteredTodos = []
+        $scope.currentPage = $stateParams.p
+        // $scope.numPerPage = 10
+        model = $stateParams.model;
+        app = $stateParams.app
+        $scope.model = model;
+        $scope.app = app;
+
+        // Reorder objects attributes so that that the table works.
+        function convertObjects(objects, list){
+            blank = []
+            for(var i=0; i<objects.length; i++)
+            {
+                obj = []
+                object = objects[i]
+
+                for (var j=0; j<list.length; j ++)
+                {
+                    obj.push(object[list[j]])
+                };
+                blank.push(obj)
+            };
+
+            return blank
+        }
+
+
+        $scope.loadObjects = function () {
+            modelDetails.getObjects(app, model, $scope.currentPage)
+            .then(function (data){
+                $scope.headers = data.headers;
+                $scope.admin_attrs = data.admin_attrs;
+                console.log($scope.admin_attrs);
+
+                blank =  new Array()
+                list_display = data.admin_attrs.list_display
+                $scope.objects = convertObjects(data.objects, list_display)
+                $scope.numPerPage = data.admin_attrs.list_per_page
+                $scope.currentPage = $stateParams.p
+                $scope.maxSize = 20;
+                $scope.bigTotalItems = data.object_count;
+                $scope.numPages = Math.ceil(data.object_count / $scope.admin_attrs.list_per_page);
+
+
+                $scope.objects_length = data.objects_length
+            })
+            .then( function (data) {
+
+                $scope.$watch('currentPage + numPerPage', function(oldVal, newVal) {
+                    var begin = (($scope.currentPage - 1) * $scope.numPerPage)
+                    , end = begin + $scope.numPerPage;
+
+                    if(oldVal != newVal){
+                        $location.search('p', $scope.currentPage)
+                    }
+
+                    $rootScope.$on('$locationChangeSuccess', function(event) {
+                        $scope.currentPage = $location.search().p
+                            modelDetails.getObjects(app, model, $scope.currentPage)
+                                .then( function (data) {
+                                    $scope.objects = convertObjects(data.objects, list_display)
+                                    $scope.objects_length = data.objects_length
+                                });
+                    });
+                });
+             });
+        }
+
+        $scope.loadObjects()
+        $scope.$watchCollection('$location.search', function () {
+        });
+
+
+        $scope.filterObjects = function(filter, option) {
+            $location.search(filter, option);
+        };
+
+
+
+
+
+    }
+]);
