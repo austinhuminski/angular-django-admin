@@ -59,4 +59,10 @@ within the ```allowed_apps``` list
 allowed_apps = ["fooApp", "barApp"]
 ```
 
+Last step is to add your project name to your settings file
+
+```python
+PROJECT_NAME = 'PROJECT_NAME'
+```
+
 That should be all you need to do to setup. The rest will go into your admin.py files and figure out how to display your objects. If not custom admin class is given for a model it falls back to some default configurations. 
