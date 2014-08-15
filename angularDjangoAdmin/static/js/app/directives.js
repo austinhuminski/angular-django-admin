@@ -1,43 +1,17 @@
-// This direcitve figures out which fields are editable and make them so.
-app.directive('editable', function($compile, $parse) {
+// Replaces 'editable' directive. Allows for dynamic name.
+app.directive('dynamicName', function($compile, $parse) {
     return {
         restrict: 'A',
-        link: function(scope, element, attrs) {
-            if (!attrs.name){
-               field = scope.$eval(attrs.field)
-               pk = attrs.pk
-
-               element.attr('name', field.name)
-               element.attr('type', field.type)
-
-               if (field.required){
-                   element.attr('required', true)
-                }
-
-               element.removeAttr('editable')
-               element.removeAttr('field')
-
-             //   scope.$watch(function() {return element.attr('class');},
-             //
-             //     function(newVal, oldVal){
-             //        if (newVal != oldVal)
-             //        {
-             //            newClasses = newVal.split(' ');
-             //            oldClasses = oldVal.split(' ');
-             //            if (newClasses.indexOf('ng-dirty') > -1 && oldClasses.indexOf('ng-dirty') == -1)
-             //            {
-             //                scope.adminObjectsForm[pk][field.name].$setViewValue(
-             //                    scope.adminObjectsForm[pk][field.name].$viewValue
-             //                )
-             //            }
-             //        }
-             //     }
-             // )
-               // $compile(element)(scope)
-           };
-        },
-    }
-})
+        terminal: true,
+        priority: 100000,
+        link: function(scope, elem) {
+          var name = $parse(elem.attr('dynamic-name'))(scope);
+          elem.removeAttr('dynamic-name');
+          elem.attr('name', name);
+          $compile(elem)(scope);
+        }
+  };
+});
 
 app.directive('objectForm', function() {
     return {

@@ -1,8 +1,5 @@
 from rest_framework import serializers
 
-from angularDjangoAdmin.app.models import Donor
-
-
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
     """
     A ModelSerializer that takes an additional `fields` argument that
@@ -27,25 +24,17 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
             for field_name in existing - allowed:
                 self.fields.pop(field_name)
 
+    def get_identity(self, data):
+        """
+        This hook is required for bulk update.
+        We need to override the default, to use the pk as the identity.
 
-'''
-EXAMPLE USE
----------------------
-This would be an example of how to use the DynamicFieldsModelSerializer. If
-it sees a fields arg from the serializers Meta class then it will use those
-fields. This model does not exist in the project. Add your own serializer
-classses here or import DynamicFieldsModelSerializer
-'''
+        Note that the data has not yet been validated at this point,
+        so we need to deal gracefully with incorrect datatypes.
+        """
+        try:
+            return int(data.get('pk', None))
+        except AttributeError:
+            return None
 
-
-class DonorAdminSerializer(DynamicFieldsModelSerializer):
-
-    class Meta:
-        model = Donor
-        fields = (
-            'last_name',
-            'address',
-            'phone',
-            'email',
-        )
 

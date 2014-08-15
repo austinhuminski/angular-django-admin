@@ -12,5 +12,9 @@ urlpatterns = patterns('api.admin_views',
         r'(?P<app>[a-z]+)/(?P<model>[a-z]+)/(?P<pk>[0-9]+)',
         views.ModelList.as_view(), name="model_list"
     ),
-
+    url(
+        r'(?P<app>[a-z]+)/(?P<model>[a-z]+)/formset',
+        views.ModelFormset.as_view(),
+        name="model_formset"
+    ),
 )

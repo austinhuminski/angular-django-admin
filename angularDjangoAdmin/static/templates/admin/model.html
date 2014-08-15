@@ -54,27 +54,25 @@
                            object-form
                            pk="{{object.pk}}"
                     >
-                        <tr>
-                                <td ng-repeat-start="(key,value) in object track by $index"
-                                    ng-if="$first">
-                                    <a href ui-sref="modelChangeForm({'app': app, 'model': model, 'pk': object.pk})"> {{ value }}</a>
-                                    <small class="error" ng-show="object_1.phone.$valid"> TESTING </small>
-                                </td>
-                                <td ng-if="!$first" ng-switch="indexes.indexOf(key.toString())" ng-repeat-end>
-                                   <span ng-switch-when="-1">{{ value }}</span>
-                                   <span ng-switch-default>
-                                   <span> {{ value }}</span>
-                                    <input editable="{{ key }}"
-                                         field="{{ list_editable_indexes[key] }}"
-                                         ng-model=value
-                                     />
-                                   </span>
-                                   <!-- <input ng&#45;switch&#45;default -->
-                                   <!--      editable="{{ key }}" -->
-                                   <!--      ng&#45;model="value" -->
-                                   <!--     field="{{list_editable_indexes[key]}}" /> -->
-                                </td
-                       </tr>
+                         <tr>
+                             <td ng-repeat-start="(key,value) in object track by $index"
+                                 ng-if="$first">
+                                 <a href ui-sref="modelChangeForm({'app': app, 'model': model, 'pk': object.pk})"> {{ value }}</a>
+                                 <small class="error" ng-show="object_1.phone.$valid"> TESTING </small>
+                             </td>
+                             <td ng-if="!$first" ng-switch="indexes.indexOf(key.toString())" ng-repeat-end>
+                                <span ng-switch-when="-1">{{ value }}</span>
+                                <span ng-switch-default>
+                                <!-- <span> {{ value }}</span> -->
+                                 <input
+                                      ng-model=value
+                                      dynamic-name="list_editable_indexes[key].name"
+                                      type="{{ list_editable_indexes[key].type}}"
+                                  />
+                                </span>
+                             </td
+                        </tr>
+
                     </tbody>
 
                 </table>

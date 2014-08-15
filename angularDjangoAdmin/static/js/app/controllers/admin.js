@@ -171,10 +171,6 @@ app.controller('adminModelController', [
         }
 
 
-        $scope.object= []
-
-
-
         $scope.saveObjects = function(){
             list_editable = []
             angular.forEach($scope.admin_attrs.list_editable, function(field){
@@ -182,26 +178,30 @@ app.controller('adminModelController', [
             });
 
             formData = []
-            angular.forEach($scope.changedForms, function(form) {
-                edit_field = $scope.adminObjectsForm[form];
-                pk = form;
-                rowData = {}
-                angular.forEach(list_editable, function(editable_field){
-                    field = edit_field[editable_field]
-                    console.log(field.$name + ': ' + field.$dirty);
-                    if (field.$dirty === true){
-                        console.log("FIELD IS DIRTY");
-                        console.log(field.$name)
-                        console.log(field.$modelValue);
-                       rowData[field.$name] = field.$modelValue
-                    }
 
-                });
-                formData.push(rowData);
+            angular.forEach($scope.changedForms, function(form) {
+               edit_field = $scope.adminObjectsForm[form];
+               pk = form;
+               rowData = {}
+               angular.forEach(list_editable, function(editable_field){
+                   field = edit_field[editable_field]
+
+                   if (field.$dirty === true){
+                      rowData[field.$name] = field.$modelValue
+                      rowData['pk'] = pk
+                   }
+               });
+
+               formData.push(rowData);
             })
 
-            console.log(formData);
+            $http.put('/api/admin/' + app + '/' + model + '/formset', formData)
+             .success(function (data) {
+                 // Reset the parent form so we can track new changes
+                 $scope.adminObjectsForm.$setPristine();
+                 $scope.changedForms = []
+              });
+
         }
 
-    }
 ]);

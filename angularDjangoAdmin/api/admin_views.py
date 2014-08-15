@@ -218,12 +218,28 @@ class ModelList(APIView):
                 in admin_attrs['list_display']
             ]
 
+            def get_type(field_type, field_name):
+
+                if field_name == 'phone':
+                    return 'phone'
+
+                if field_type in [
+                    "IntegerField",
+                    "DecimalField",
+                    "CharField",
+                    "TextField",
+                ]:
+                    return 'text'
+                else:
+                    return 'checkbox'
+
             admin_attrs['list_editable'] = [
                 {
                     'field': field,
-                    'type': 'text' if MODEL._meta.get_field(
-                            field
-                        ).get_internal_type() in 'CharField' else 'checkbox',
+                    'type': get_type(
+                        MODEL._meta.get_field(field).get_internal_type(),
+                        field
+                    ),
                     'required': True if not MODEL._meta.get_field(
                         field
                     ).blank else False
@@ -279,3 +295,39 @@ class ModelList(APIView):
         data['objects'] = serializer.data
         data['object_count'] = MODEL.objects.filter(**GET).count()
         return Response(data)
+
+
+class ModelFormset(generics.UpdateAPIView):
+    '''
+    We're going to use this to update and of the list_editable fields
+    '''
+
+    def put(self, request, app, model, *args, **kwargs):
+
+        MODEL = get_model(str(app), str(model))
+        data = request.DATA
+
+        # Find out if we are updating more then one object.
+        many = True if len(data) > 1 else False
+        if not many:
+            data = data[0]
+            queryset = MODEL.objects.get(pk=data['pk'])
+        else:
+            objects = [object['pk'] for object in data]
+            queryset = MODEL.objects.filter(pk__in=objects)
+
+        serializer = serializer_classes[MODEL._meta.object_name](
+            queryset,
+            data=data,
+            partial=True,
+            many=many
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(
+                serializer.errors, status=status.HTTP_400_BAD_REQUEST
+            )
+
